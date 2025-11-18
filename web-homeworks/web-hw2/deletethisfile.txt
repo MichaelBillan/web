@@ -1,0 +1,2 @@
+This file is for architectural purposes only.
+Delete this file after adding files to the folder that contains this file.
