@@ -6,7 +6,9 @@
    display: flex;
    height: 100vh;
    margin: 0;
+   color: #333;
 }
+
 .container{
     background-color: #fff;
     padding: 20px;
@@ -14,12 +16,14 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     width: 300px;
 }
+
 .content h1{
     font-weight: bold;
     font-size: xx-large;
     margin-bottom: 20px;
     color: #333;
 }
+
 .container input{
     width: 100%;
     padding: 10px;
