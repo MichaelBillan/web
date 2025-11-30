@@ -9,7 +9,7 @@
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded shadow-md w-96">
         <h1 class="text-2xl font-semibold mb-6 text-center">Register</h1>
-        <form>
+        <form id="registerForm" action="/src/register.html" method="post">
             <input type="text" id="username" placeholder="Username" required class="w-full p-3 mb-4 border rounded">
             <input type="email" id="email" placeholder="Email" required class="w-full p-3 mb-4 border rounded">
             <input type="password" id="password" placeholder="Password" required class="w-full p-3 mb-4 border rounded">
@@ -19,6 +19,8 @@
             <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">Register</button>
             <a href="login.html" class="block text-center mt-4 text-blue-500 hover:underline">Already have an account? Login</a>
         </form>
-    </div> 
+        <div id="registerMessage" class="mt-2 text-red-500 text-center text-sm"></div>
+    </div>
+    <script src="register.js"></script>
 </body>
 </html>

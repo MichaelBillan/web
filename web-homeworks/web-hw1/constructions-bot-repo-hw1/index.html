@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Construction Progress Bot - Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+  <aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <div class="px-6 py-4 border-b border-gray-800">
+      <h1 class="text-xl font-bold">Construction Bot</h1>
+      <p class="text-sm text-gray-400">Site Progress Monitoring</p>
+    </div>
+
+    <nav class="flex-1 px-4 py-4 space-y-2">
+      <button class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-gray-800"
+              data-screen="dashboard">
+        Dashboard
+      </button>
+      <button class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-gray-800"
+              data-screen="scans">
+        Scans & Change Detection
+      </button>
+      <button class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-gray-800"
+              data-screen="areas">
+        Areas & Floors
+      </button>
+      <button class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-gray-800"
+              data-screen="reports">
+        Reports & BI
+      </button>
+      <button class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-gray-800"
+              data-screen="upload">
+        Upload Scans
+      </button>
+    </nav>
+
+    <div class="px-4 py-4 border-t border-gray-800 text-xs text-gray-400">
+      Prototype – initial screens only
+    </div>
+  </aside>
+
+
+  <main class="flex-1 p-6 overflow-y-auto">
+
+    <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-bold">Construction Monitoring System</h2>
+        <p class="text-gray-500 text-sm">
+          Real-time insight based on 3D scans and progress analytics
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-gray-700 flex items-center gap-2">
+          Site:
+          <select id="siteFilter"
+                  class="border border-gray-300 rounded px-2 py-1 text-sm">
+          </select>
+        </label>
+        <span class="text-xs text-gray-500" id="currentDateLabel"></span>
+      </div>
+    </header>
+
+
+    <section id="screens" class="space-y-6">
+
+      <!-- Dashboard screen -->
+      <section id="screen-dashboard" class="screen">
+        <h3 class="text-xl font-semibold mb-4">Dashboard</h3>
+
+        <!-- KPI Cards -->
+        <div id="kpiContainer" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+        </div>
+
+        <!-- Areas table + Progress over time chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <!-- Areas table -->
+          <div class="bg-white rounded shadow p-4 lg:col-span-2">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold">Progress by Area / Floor</h4>
+              <span class="text-xs text-gray-400">Data</span>
+            </div>
+            <table class="w-full text-sm">
+              <thead class="border-b">
+                <tr class="text-left text-gray-500">
+                  <th class="py-2">Area</th>
+                  <th class="py-2">Floor</th>
+                  <th class="py-2">% Progress</th>
+                  <th class="py-2">% Change between scans</th>
+                </tr>
+              </thead>
+              <tbody id="areasTableBody">
+
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Line chart – progress over time -->
+          <div class="bg-white rounded shadow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold">Project Progress Over Time</h4>
+              <span class="text-xs text-gray-400">Chart</span>
+            </div>
+            <div class="relative h-56">
+              <canvas id="progressOverTimeChart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Area progress bar chart + Area status donut -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded shadow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold">Area Progress (Bar)</h4>
+              <span class="text-xs text-gray-400">By area</span>
+            </div>
+            <div class="relative h-56">
+              <canvas id="areaProgressChart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white rounded shadow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold">Area Status Distribution</h4>
+              <span class="text-xs text-gray-400">
+                Not started / In progress / Near done / Completed
+              </span>
+            </div>
+            <div class="relative h-56">
+              <canvas id="areaStatusPieChart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scans & Change Detection screen -->
+      <section id="screen-scans" class="screen hidden">
+        <h3 class="text-xl font-semibold mb-4">Scans & Change Detection</h3>
+
+        <div class="bg-white rounded shadow p-4 mb-4">
+          <h4 class="font-semibold mb-2">Available Scans</h4>
+          <table class="w-full text-sm">
+            <thead class="border-b text-left text-gray-500">
+              <tr>
+                <th class="py-2">Scan ID</th>
+                <th class="py-2">Site</th>
+                <th class="py-2">Date</th>
+                <th class="py-2">Format</th>
+                <th class="py-2">Size</th>
+                <th class="py-2 text-center">Compare</th>
+              </tr>
+            </thead>
+            <tbody id="scansTableBody">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-white rounded shadow p-4">
+          <h4 class="font-semibold mb-2">Scan Comparison Result</h4>
+          <p class="text-sm text-gray-500 mb-3">
+            Select exactly two scans from the same site to see volume and
+            percentage change analysis.
+          </p>
+          <button id="compareBtn"
+                  class="px-4 py-2 rounded bg-blue-600 text-white text-sm disabled:opacity-50"
+                  disabled>
+            Compare Selected Scans
+          </button>
+          <div id="compareResult" class="mt-4 text-sm text-gray-700">
+            <!-- Result text -->
+          </div>
+
+          <!-- Charts row -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+            <div>
+              <h5 class="text-sm font-semibold mb-1">
+                Volume Comparison (t1 vs t2)
+              </h5>
+              <div class="relative h-52">
+                <canvas id="scanVolumeCompareChart" class="w-full h-full"></canvas>
+              </div>
+            </div>
+            <div>
+              <h5 class="text-sm font-semibold mb-1">
+                Change by Area
+              </h5>
+              <div class="relative h-52">
+                <canvas id="scanAreaChangeChart" class="w-full h-full"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Areas screen -->
+      <section id="screen-areas" class="screen hidden">
+        <h3 class="text-xl font-semibold mb-4">Areas & Floors</h3>
+        <div class="bg-white rounded shadow p-4 mb-4">
+          <form id="addAreaForm" class="flex flex-wrap gap-3 items-end">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Area name</label>
+              <input type="text" id="areaNameInput"
+                     class="border border-gray-300 rounded px-2 py-1 text-sm"
+                     placeholder="e.g. Lobby Floor 1" required>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Floor</label>
+              <input type="text" id="areaFloorInput"
+                     class="border border-gray-300 rounded px-2 py-1 text-sm"
+                     placeholder="e.g. 1" required>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">% Progress</label>
+              <input type="number" min="0" max="100" id="areaProgressInput"
+                     class="border border-gray-300 rounded px-2 py-1 text-sm"
+                     value="0" required>
+            </div>
+            <button type="submit"
+                    class="px-4 py-2 bg-green-600 text-white text-sm rounded">
+              Add Area
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-white rounded shadow p-4 mb-4">
+          <h4 class="font-semibold mb-2">Areas List</h4>
+          <ul id="areasList" class="space-y-2 text-sm">
+          </ul>
+        </div>
+
+        <!-- Overall distribution chart -->
+        <div class="bg-white rounded shadow p-4">
+          <h4 class="font-semibold mb-2">Areas Progress Distribution</h4>
+          <p class="text-xs text-gray-500 mb-2">
+            Histogram-like view of how many areas are in each progress bucket.
+          </p>
+          <div class="relative h-56">
+            <canvas id="areasProgressDistributionChart" class="w-full h-full"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reports screen -->
+      <section id="screen-reports" class="screen hidden">
+        <h3 class="text-xl font-semibold mb-4">Reports & BI</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white rounded shadow p-4">
+            <h4 class="font-semibold mb-2">Available Reports</h4>
+            <ul id="reportsList" class="list-disc pl-5 text-sm space-y-1">
+              <!-- Filled by JS -->
+            </ul>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h4 class="font-semibold mb-2">Report Preview</h4>
+            <p id="reportPreview" class="text-sm text-gray-700 mb-3">
+              Select a report to see a short summary and a small chart.
+            </p>
+            <div class="relative h-56">
+              <canvas id="reportPreviewChart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upload screen -->
+      <section id="screen-upload" class="screen hidden">
+        <h3 class="text-xl font-semibold mb-4">Upload Scans</h3>
+        <div class="bg-white rounded shadow p-4">
+          <form id="uploadForm" class="space-y-3">
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">Select scan file(s)</label>
+              <input type="file" id="scanFileInput"
+                     class="border border-gray-300 rounded px-2 py-1 text-sm"
+                     accept=".las,.ply,.e57" multiple>
+              <p class="text-xs text-gray-400 mt-1">
+                This is a fake upload – data is not actually sent anywhere.
+              </p>
+            </div>
+            <button type="button"
+                    id="addFilesBtn"
+                    class="px-4 py-2 bg-blue-600 text-white text-sm rounded">
+              Add files to list
+            </button>
+          </form>
+
+          <div class="mt-4">
+            <h4 class="font-semibold mb-2 text-sm">Selected Files</h4>
+            <ul id="selectedFilesList" class="text-sm list-disc pl-5">
+              <!-- Filled by JS -->
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
